@@ -1,0 +1,74 @@
+CREATE TABLE IF NOT EXISTS `test_db`.`card` (
+  `idCard` INT NOT NULL AUTO_INCREMENT,
+  `Pin` VARCHAR(45) NOT NULL,
+  `PinSave` VARCHAR(20) NOT NULL,
+  `ClientID` INT NOT NULL,
+  PRIMARY KEY (`idCard`),
+  UNIQUE INDEX `Debit_Pin_UNIQUE` (`Pin` ASC) VISIBLE,
+  INDEX `fk_Card_Client_idx` (`ClientID` ASC) VISIBLE,
+  CONSTRAINT `fk_Card_Client`
+    FOREIGN KEY (`ClientID`)
+    REFERENCES `test_db`.`client` (`idClient`))
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8mb4
+COLLATE = utf8mb4_0900_ai_ci
+
+CREATE TABLE IF NOT EXISTS `test_db`.`client` (
+  `idClient` INT NOT NULL AUTO_INCREMENT,
+  `Lname` VARCHAR(45) NOT NULL,
+  `Fname` VARCHAR(45) NOT NULL,
+  `Address` VARCHAR(45) NOT NULL,
+  `PhoneNum` VARCHAR(45) NOT NULL,
+  PRIMARY KEY (`idClient`))
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8mb4
+COLLATE = utf8mb4_0900_ai_ci
+
+CREATE TABLE IF NOT EXISTS `test_db`.`account_history` (
+  `idAccount_History` INT NOT NULL,
+  `Date` DATETIME(6) NULL DEFAULT NULL,
+  `Transfer` VARCHAR(45) NOT NULL,
+  `AccountID` INT NOT NULL,
+  PRIMARY KEY (`idAccount_History`, `AccountID`),
+  INDEX `fk_Account_History_Bank_Account1_idx` (`AccountID` ASC) VISIBLE,
+  CONSTRAINT `fk_Account_History_Bank_Account1`
+    FOREIGN KEY (`AccountID`)
+    REFERENCES `test_db`.`bank_account` (`idAccount`))
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8mb4
+COLLATE = utf8mb4_0900_ai_ci
+
+CREATE TABLE IF NOT EXISTS `test_db`.`bank_account` (
+  `idAccount` INT NOT NULL AUTO_INCREMENT,
+  `Type` VARCHAR(20) NULL DEFAULT NULL,
+  `Balance` DECIMAL(10,2) NULL DEFAULT NULL,
+  `Credit` DECIMAL(10,2) NULL DEFAULT NULL,
+  `ClientID` INT NOT NULL,
+  PRIMARY KEY (`idAccount`, `ClientID`),
+  INDEX `fk_Bank_Account_Client1_idx` (`ClientID` ASC) VISIBLE,
+  CONSTRAINT `fk_Bank_Account_Client1`
+    FOREIGN KEY (`ClientID`)
+    REFERENCES `test_db`.`client` (`idClient`))
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8mb4
+COLLATE = utf8mb4_0900_ai_ci
+
+CREATE TABLE IF NOT EXISTS `test_db`.`Account_has_Card` (
+  `bank_account_idAccount` INT NOT NULL,
+  `bank_account_ClientID` INT NOT NULL,
+  `card_idCard` INT NOT NULL,
+  INDEX `fk_bank_account_has_card_card1_idx` (`card_idCard` ASC) VISIBLE,
+  INDEX `fk_bank_account_has_card_bank_account1_idx` (`bank_account_idAccount` ASC, `bank_account_ClientID` ASC) VISIBLE,
+  CONSTRAINT `fk_bank_account_has_card_bank_account1`
+    FOREIGN KEY (`bank_account_idAccount` , `bank_account_ClientID`)
+    REFERENCES `test_db`.`bank_account` (`idAccount` , `ClientID`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_bank_account_has_card_card1`
+    FOREIGN KEY (`card_idCard`)
+    REFERENCES `test_db`.`card` (`idCard`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8mb4
+COLLATE = utf8mb4_0900_ai_ci
