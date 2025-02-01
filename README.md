@@ -1,2 +1,2 @@
-# teht-vi-
-erilaisia tehtäviä ja testejä
+# tehtavia
+Eri koodauskielillä tehtyjä pieniä tehtäviä
